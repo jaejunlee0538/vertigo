@@ -23,8 +23,8 @@ bool EdgeSE2MaxMixture::read(std::istream& is)
   {
     Vector3d p;
     is >>  weight >> p[0] >> p[1] >> p[2];
-    measurement().fromVector(p);
-    inverseMeasurement() = measurement().inverse();
+    this->setMeasurementData(&p[0]);
+
     for (int i = 0; i < 3; ++i)
       for (int j = i; j < 3; ++j) {
         is >> information()(i, j);
