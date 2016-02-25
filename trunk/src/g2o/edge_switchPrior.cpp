@@ -28,6 +28,5 @@ using namespace std;
       const VertexSwitchLinear* s = static_cast<const VertexSwitchLinear*>(_vertices[0]);
 
       _error[0] = measurement() - s->x();
-
     }
 

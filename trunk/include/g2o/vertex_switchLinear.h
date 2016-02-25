@@ -23,7 +23,10 @@
       VertexSwitchLinear() { setToOrigin(); };
 
       virtual void setToOriginImpl();
-
+    /*
+     *  Implementation of Psi(s_ij) function
+     *      eq 5.10 in page 93 - Robust Optimization for Simultaneous Localization and Mapping(2012)
+     */
       virtual void oplusImpl(const double* update);
 
       virtual bool read(std::istream& is);

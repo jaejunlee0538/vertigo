@@ -20,34 +20,34 @@ EdgeSE2MaxMixture::EdgeSE2MaxMixture() : g2o::EdgeSE2::EdgeSE2()
 
 // ================================================
 bool EdgeSE2MaxMixture::read(std::istream& is)
-  {
-    Vector3d p;
-    is >>  weight >> p[0] >> p[1] >> p[2];
-    this->setMeasurementData(&p[0]);
+{
+  Vector3d p;
+  is >>  weight >> p[0] >> p[1] >> p[2];
+  this->setMeasurementData(&p[0]);
 
-    for (int i = 0; i < 3; ++i)
-      for (int j = i; j < 3; ++j) {
-        is >> information()(i, j);
-        if (i != j)
-          information()(j, i) = information()(i, j);
-      }
+  for (int i = 0; i < 3; ++i)
+    for (int j = i; j < 3; ++j) {
+      is >> information()(i, j);
+      if (i != j)
+        information()(j, i) = information()(i, j);
+    }
 
-    information_constraint = _information;
-    nu_constraint = 1.0/sqrt(information_constraint.inverse().determinant());
-    information_nullHypothesis = information_constraint*weight;
-    nu_nullHypothesis = 1.0/sqrt(information_nullHypothesis.inverse().determinant());
+  information_constraint = _information;
+  nu_constraint = 1.0/sqrt(information_constraint.inverse().determinant());
+  information_nullHypothesis = information_constraint*weight;
+  nu_nullHypothesis = 1.0/sqrt(information_nullHypothesis.inverse().determinant());
 
-    return true;
-  }
+  return true;
+}
 // ================================================
 bool EdgeSE2MaxMixture::write(std::ostream& os) const
 {
-    Vector3d p = measurement().toVector();
-    os << p.x() << " " << p.y() << " " << p.z();
-    for (int i = 0; i < 3; ++i)
-      for (int j = i; j < 3; ++j)
-        os << " " << information()(i, j);
-    return os.good();
+  Vector3d p = measurement().toVector();
+  os << p.x() << " " << p.y() << " " << p.z();
+  for (int i = 0; i < 3; ++i)
+    for (int j = i; j < 3; ++j)
+      os << " " << information()(i, j);
+  return os.good();
 }
 
 // ================================================
@@ -89,31 +89,31 @@ void EdgeSE2MaxMixture::computeError()
 
 // ================================================
 #ifdef G2O_HAVE_OPENGL
-  EdgeSE2MaxMixtureDrawAction::EdgeSE2MaxMixtureDrawAction(): DrawAction(typeid(EdgeSE2MaxMixture).name()){}
+EdgeSE2MaxMixtureDrawAction::EdgeSE2MaxMixtureDrawAction(): DrawAction(typeid(EdgeSE2MaxMixture).name()){}
 
-  g2o::HyperGraphElementAction* EdgeSE2MaxMixtureDrawAction::operator()(g2o::HyperGraph::HyperGraphElement* element,
-               g2o::HyperGraphElementAction::Parameters* /*params_*/){
-    if (typeid(*element).name()!=_typeName)
-      return 0;
-    EdgeSE2MaxMixture* e =  static_cast<EdgeSE2MaxMixture*>(element);
-
-
-    g2o::VertexSE2* fromEdge = static_cast<g2o::VertexSE2*>(e->vertices()[0]);
-    g2o::VertexSE2* toEdge   = static_cast<g2o::VertexSE2*>(e->vertices()[1]);
+g2o::HyperGraphElementAction* EdgeSE2MaxMixtureDrawAction::operator()(g2o::HyperGraph::HyperGraphElement* element,
+                                                                      g2o::HyperGraphElementAction::Parameters* /*params_*/){
+  if (typeid(*element).name()!=_typeName)
+    return 0;
+  EdgeSE2MaxMixture* e =  static_cast<EdgeSE2MaxMixture*>(element);
 
 
-    if (e->nullHypothesisMoreLikely) glColor3f(0.0,0.0,0.0);
-    else glColor3f(1.0,0.5,0.2);
+  g2o::VertexSE2* fromEdge = static_cast<g2o::VertexSE2*>(e->vertices()[0]);
+  g2o::VertexSE2* toEdge   = static_cast<g2o::VertexSE2*>(e->vertices()[1]);
 
-    glPushAttrib(GL_ENABLE_BIT);
-    glDisable(GL_LIGHTING);
-    glBegin(GL_LINES);
-    glVertex3f(fromEdge->estimate().translation().x(),fromEdge->estimate().translation().y(),0.);
-    glVertex3f(toEdge->estimate().translation().x(),toEdge->estimate().translation().y(),0.);
-    glEnd();
-    glPopAttrib();
-    return this;
-  }
+
+  if (e->nullHypothesisMoreLikely) glColor3f(0.0,0.0,0.0);
+  else glColor3f(1.0,0.5,0.2);
+
+  glPushAttrib(GL_ENABLE_BIT);
+  glDisable(GL_LIGHTING);
+  glBegin(GL_LINES);
+  glVertex3f(fromEdge->estimate().translation().x(),fromEdge->estimate().translation().y(),0.);
+  glVertex3f(toEdge->estimate().translation().x(),toEdge->estimate().translation().y(),0.);
+  glEnd();
+  glPopAttrib();
+  return this;
+}
 #endif
 
 
